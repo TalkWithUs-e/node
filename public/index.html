@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.io Chat</title>
+    <style>
+        #chatBox {
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 300px;
+            overflow-y: scroll;
+        }
+        #messageInput {
+            width: 80%;
+        }
+        #sendMessage {
+            width: 15%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Socket.io Chat</h1>
+    <div id="chatBox"></div>
+    <input type="text" id="messageInput" placeholder="Type your message here">
+    <button id="sendMessage">Send</button>
+
+    <!-- Socket.io 클라이언트 스크립트 포함 -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Socket.io 클라이언트 설정
+        const socket = io();
+
+        // 서버로부터 메시지를 수신했을 때 실행
+        socket.on('chatMessage', (msg) => {
+            const chatBox = document.getElementById('chatBox');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = msg;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight; // 스크롤을 최신 메시지로 이동
+        });
+
+        // 버튼 클릭 시 서버로 메시지 전송
+        document.getElementById('sendMessage').onclick = () => {
+            const message = document.getElementById('messageInput').value;
+            if (message) {
+                socket.emit('chatMessage', message);
+                document.getElementById('messageInput').value = ''; // 입력 필드 초기화
+            }
+        };
+
+        // Enter 키로 메시지 전송
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('sendMessage').click();
+            }
+        });
+    </script>
+</body>
+</html>
