@@ -24,4 +24,4 @@ const checkLogin = async (req, res, next) => {
 
 };
 
-d
+module.exports = checkLogin;
